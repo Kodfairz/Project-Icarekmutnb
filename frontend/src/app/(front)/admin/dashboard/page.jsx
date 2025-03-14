@@ -1,88 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import axios from "axios";
-import { API } from "../../../service/api";
-import { toast } from 'react-toastify';
-
+import AdminList from "../../../components/Admin/AdminList";
+import BlogManagement from "../../../components/Admin/Blog/BlogManagement";
+import CategoryBlog from "../../../components/Admin/Blog/BlogCategory";
 
 export default function AdminDashboard() {
-  const [newUser, setNewUser] = useState({ username: "", password: "" });
-  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("admin");
 
-const handleAddUser = async (event) => {
-  try {
-    event.preventDefault();
-    const response = await axios.post(`${API}/users/`, {
-      "username": newUser.username,
-      "password": newUser.password,
-      "role": "admin"
-    })
-
-    if(response.status == 200) {
-      toast.success("เพิ่ม Admin สำเร็จ!")
-      setNewUser({ username: "", password: "" })
-    }
-
-  } catch (error) {
-    console.log(error)
-    toast.error(error.response.data ?? "เกิดข้อผิดพลาดในการเพิ่ม Admin")
-  }
-}
-
-
-
- 
   return (
-    <div>
-    
-      <div className="p-8 bg-gray-100 min-h-screen">
-        <h1 className="text-3xl font-bold text-blue-600">Admin Dashboard</h1>
-      
-       
+    <div className="container mx-auto p-6 min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <h1 className="text-4xl font-bold text-gray-800 mb-8 animate-fade-in-down">
+        Admin Dashboard
+      </h1>
 
-        <form onSubmit={handleAddUser} className="mt-6 space-y-4 bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold mb-4">Add New Admin User</h2>
-          <input
-            type="text"
-            placeholder="Username"
-            value={newUser.username}
-            onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
-            required
-            className="w-full p-3 border border-gray-300 rounded-md"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={newUser.password}
-            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-            required
-            className="w-full p-3 border border-gray-300 rounded-md"
-          />
-          <button type="submit" className="w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
-            เพิ่ม Admin
+      {/* Tab Navigation */}
+      <nav className="flex flex-wrap gap-2 mb-8 border-b border-gray-200">
+        {["admin", "blog", "category blog"].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-6 py-3 text-lg font-medium capitalize rounded-t-lg transition-all duration-300 ${activeTab === tab
+              ? "bg-white text-indigo-600 border-b-4 border-indigo-600"
+              : "text-gray-600 hover:bg-gray-100 hover:text-indigo-500"
+              }`}
+          >
+            {tab}
           </button>
-        </form>
-        <nav className="mt-6">
-          <ul className="space-y-4">
-            <li>
-              <button
-                onClick={() => router.push("/admin/dashboard/add-post")}
-                className="w-full p-3 bg-green-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-              >
-                เพิ่มโพสต์
-              </button>
-              <button
-                onClick={() => router.push("/Pages")}
-                className="mt-6 p-3 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
-              >
-                กลับไปหน้าแรก
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </div>
+        ))}
+      </nav>
+
+      {/* Tab Content */}
+      <section className="bg-white rounded-xl shadow-lg p-6 animate-fade-in">
+        {activeTab === "admin" && <AdminList />}
+        {activeTab === "blog" && <BlogManagement />}
+        {activeTab === "category blog" && <CategoryBlog />}
+      </section>
     </div>
   );
 }
