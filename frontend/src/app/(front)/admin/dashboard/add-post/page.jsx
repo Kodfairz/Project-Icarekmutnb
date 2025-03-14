@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -11,9 +11,27 @@ import { API } from "../../../../service/api";
 
 export default function AddPostPage() {
   const [title, setTitle] = useState("");
+  const [category, setCategory] = useState(""); // state สำหรับประเภท
+  const [coverImage, setCoverImage] = useState(null); // state สำหรับเก็บหน้าปกข่าวสาร
+  const [videoLink, setVideoLink] = useState(""); // state สำหรับลิงก์วิดีโอแนะนำ
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("edit"); // แท็บ Edit หรือ Preview
+  const [categories, setCategories] = useState([]);
   const router = useRouter();
+
+  const getCategories = async () => {
+    try {
+      const response = await axios.get(`${API}/category/`);
+      console.log(response);
+      setCategories(response.data.resultData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   const editor = useEditor({
     extensions: [
@@ -31,29 +49,23 @@ export default function AddPostPage() {
       return null;
     }
 
-    // ตรวจสอบประเภทไฟล์ (รองรับเฉพาะ jpg, png, gif)
     if (!file.type.startsWith("image/")) {
       toast.error("รองรับเฉพาะไฟล์รูปภาพ!");
       return null;
     }
 
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("file", file);
+    formData.append("upload_preset", `jyvur9yd`);
+    formData.append("folder", "icare");
 
     try {
-      const response = await axios.post("https://api.imgur.com/3/image", formData, {
-        headers: {
-          "Authorization": "Client-ID 0bc0666a250e55e",
-        },
-      });
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/dcq3ijz0g/image/upload`,
+        formData
+      );
 
-      if (response.data.success) {
-        const imageUrl = response.data.data.link;
-        console.log("Image uploaded:", imageUrl);
-        return imageUrl;
-      } else {
-        throw new Error("Upload failed");
-      }
+      return response.data.url;
     } catch (error) {
       console.error("Error uploading image:", error.response?.data || error.message);
       toast.error("อัปโหลดรูปภาพไม่สำเร็จ");
@@ -78,6 +90,13 @@ export default function AddPostPage() {
     };
   };
 
+  const handleCoverImageUpload = async (file) => {
+    const imageUrl = await handleImageUpload(file);
+    if (imageUrl) {
+      setCoverImage(imageUrl); // เก็บ URL ของหน้าปก
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -86,6 +105,9 @@ export default function AddPostPage() {
       const content = editor.getHTML();
       const response = await axios.post(`${API}/posts`, {
         title,
+        category,
+        coverImage, // ส่ง URL ของหน้าปกข่าวสาร
+        videoLink,  // ส่งลิงก์วิดีโอแนะนำ
         content,
       });
 
@@ -100,21 +122,36 @@ export default function AddPostPage() {
     }
   };
 
-  return (
-    <div className="container mx-auto p-6 min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <h1 className="text-4xl font-bold text-gray-800 mb-8 animate-fade-in-down">
-        เพิ่มโพสต์
-      </h1>
+  // ฟังก์ชั่นแปลงลิงก์ YouTube ให้เป็น iframe
+  const renderVideoPreview = (link) => {
+    const youtubePattern = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = link.match(youtubePattern);
+    if (match) {
+      const videoId = match[1];
+      return (
+        <div className="mt-4">
+          <iframe
+            width="100%"
+            height="315"
+            src={`https://www.youtube.com/embed/${videoId}`}
+            title="YouTube video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
+      );
+    }
+    return null; // ถ้าไม่ใช่ลิงก์ YouTube จะไม่แสดงอะไร
+  };
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-xl shadow-lg p-6 space-y-6"
-      >
+  return (
+    <div className="container mx-auto p-6 min-h-screen">
+      <h1 className="text-4xl font-bold text-gray-800 mb-8 animate-fade-in-down">เพิ่มโพสต์</h1>
+
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-6 space-y-6">
         <div>
-          <label
-            htmlFor="title"
-            className="block text-lg font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor="title" className="block text-lg font-medium text-gray-700 mb-2">
             หัวข้อ
           </label>
           <input
@@ -129,9 +166,63 @@ export default function AddPostPage() {
         </div>
 
         <div>
-          <label className="block text-lg font-medium text-gray-700 mb-2">
-            เนื้อหา
+          <label htmlFor="category" className="block text-lg font-medium text-gray-700 mb-2">
+            ประเภทโรค
           </label>
+          <select
+            id="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+            required
+          >
+            <option value="">เลือกประเภทโรค</option>
+            {categories.map((item, index) => (
+              <option key={index} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* เพิ่ม input สำหรับหน้าปกข่าวสาร */}
+        <div>
+          <label htmlFor="coverImage" className="block text-lg font-medium text-gray-700 mb-2">
+            หน้าปกข่าวสาร
+          </label>
+          <input
+            type="file"
+            id="coverImage"
+            accept="image/*"
+            onChange={(e) => handleCoverImageUpload(e.target.files[0])}
+            className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+          />
+          {coverImage && (
+            <div className="mt-4">
+              <img src={coverImage} alt="Cover" className="w-full rounded-lg" />
+            </div>
+          )}
+        </div>
+
+        {/* เพิ่ม input สำหรับลิงก์วิดีโอแนะนำ */}
+        <div>
+          <label htmlFor="videoLink" className="block text-lg font-medium text-gray-700 mb-2">
+            ลิงก์วิดีโอแนะนำ
+          </label>
+          <input
+            type="url"
+            id="videoLink"
+            value={videoLink}
+            onChange={(e) => setVideoLink(e.target.value)}
+            className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+            placeholder="กรอกลิงก์วิดีโอแนะนำ"
+          />
+          {/* แสดงตัวอย่างวิดีโอหากมีลิงก์ */}
+          {videoLink && renderVideoPreview(videoLink)}
+        </div>
+
+        <div>
+          <label className="block text-lg font-medium text-gray-700 mb-2">เนื้อหา</label>
 
           {/* Tab Navigation */}
           <div className="flex gap-2 mb-4">

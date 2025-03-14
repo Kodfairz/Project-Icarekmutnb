@@ -6,17 +6,17 @@ import BlogManagement from "../../../components/Admin/Blog/BlogManagement";
 import CategoryBlog from "../../../components/Admin/Blog/BlogCategory";
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState("admin");
+  const [activeTab, setActiveTab] = useState("แอดมิน");
 
   return (
-    <div className="container mx-auto p-6 min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="container mx-auto p-6 min-h-screen ">
       <h1 className="text-4xl font-bold text-gray-800 mb-8 animate-fade-in-down">
-        Admin Dashboard
+        แดชบอร์ด
       </h1>
 
       {/* Tab Navigation */}
       <nav className="flex flex-wrap gap-2 mb-8 border-b border-gray-200">
-        {["admin", "blog", "category blog"].map((tab) => (
+        {["แอดมิน", "ข่าวสาร", "ประเภทโรค"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -32,9 +32,9 @@ export default function AdminDashboard() {
 
       {/* Tab Content */}
       <section className="bg-white rounded-xl shadow-lg p-6 animate-fade-in">
-        {activeTab === "admin" && <AdminList />}
-        {activeTab === "blog" && <BlogManagement />}
-        {activeTab === "category blog" && <CategoryBlog />}
+        {activeTab === "แอดมิน" && <AdminList />}
+        {activeTab === "ข่าวสาร" && <BlogManagement />}
+        {activeTab === "ประเภทโรค" && <CategoryBlog />}
       </section>
     </div>
   );

@@ -2,12 +2,8 @@ import { Elysia } from 'elysia';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import FormData from "form-data";
-import multer from "multer";
-import fs from "fs";
-import axios from 'axios';
 
-const upload = multer({ dest: "uploads/" }); // อัปโหลดไฟล์ลงโฟลเดอร์ uploads
+
 
 const prisma = new PrismaClient();
 
@@ -201,33 +197,6 @@ export const userRoutes = new Elysia({ prefix: "/users" })
             "resultData": user
         };
     })
-    .post("/upload-image", upload.single("image"), async ({ file }) => {
-        if (!file) {
-            return { success: false, message: "No file uploaded" };
-        }
 
-        try {
-            // อ่านไฟล์เป็น Stream เพื่อส่งไป Imgur
-            const imageStream = fs.createReadStream(file.path);
-            const formData = new FormData();
-            formData.append("image", imageStream);
-
-            // ส่งรูปไป Imgur
-            const response = await axios.post("https://api.imgur.com/3/image", formData, {
-                headers: {
-                    Authorization: "Client-ID 0bc0666a250e55e", // 🔑 ใช้ Client-ID ของคุณ
-                    ...formData.getHeaders(),
-                },
-            });
-
-            // ลบไฟล์หลังอัปโหลดเสร็จ (ลดการใช้พื้นที่)
-            fs.unlinkSync(file.path);
-
-            return { success: true, url: response.data.data.link };
-        } catch (error) {
-            console.error("Upload error:", error.message);
-            return { success: false, message: "Upload failed" };
-        }
-    });
 
 
