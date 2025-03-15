@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Mar 14, 2025 at 04:01 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Host: 127.0.0.1
+-- Generation Time: Mar 15, 2025 at 11:47 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,53 @@ SET time_zone = "+00:00";
 --
 -- Database: `icare`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `category`
+--
+
+CREATE TABLE `category` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `category`
+--
+
+INSERT INTO `category` (`id`, `name`) VALUES
+(3, 'โรคไต');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `posts`
+--
+
+CREATE TABLE `posts` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `category_id` int(11) NOT NULL,
+  `cover_image_url` varchar(255) DEFAULT NULL,
+  `video_link` varchar(255) DEFAULT NULL,
+  `content` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `isActive` tinyint(1) DEFAULT 1,
+  `views` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `posts`
+--
+
+INSERT INTO `posts` (`id`, `title`, `category_id`, `cover_image_url`, `video_link`, `content`, `created_at`, `updated_at`, `isActive`, `views`) VALUES
+(2, 'ฟหกฟหก', 3, 'http://res.cloudinary.com/dcq3ijz0g/image/upload/v1741982951/icare/jbtymrxwqs1om40p5gpr.jpg', '', '<p>แอิแอิ</p>', '2025-03-14 13:09:17', '2025-03-15 02:29:20', 1, 0),
+(3, '5555', 3, 'http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742033612/icare/q12reqs5htrsfmstgkg9.jpg', 'https://youtu.be/dlI7rSqAWD4?si=MD5vvyfEbpAlwEq7', '<p>ทดสอบข้อมูลท่องเที่ยว</p><p></p><p><img src=\"http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742029301/icare/l0ndho7j4wmglv2m2yc2.jpg\"></p><p></p><p>สามารถทดสอบรูปได้</p>', '2025-03-15 02:02:18', '2025-03-15 03:13:48', 0, 0),
+(4, 'sdfsdf', 3, 'http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742030571/icare/ciy0fndj4mgz2ioxy4mp.jpg', '', '<p>sdfsdfsdf</p>', '2025-03-15 02:22:53', '2025-03-15 02:24:10', 1, 0),
+(5, 'สวัสดีครับ1111', 3, 'http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742033522/icare/dwcg9kwgfuoqrordagnb.jpg', 'https://youtu.be/dlI7rSqAWD4?si=MD5vvyfEbpAlwEq7', '<p>ทดสอบข้อมูลท่องเที่ยว ทดสอบ</p><p></p><p></p><p>สามารถทดสอบรูปได้</p>', '2025-03-15 03:12:25', '2025-03-15 03:12:25', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -59,6 +106,19 @@ INSERT INTO `users` (`id`, `username`, `password`, `role`, `isActive`, `createdA
 --
 
 --
+-- Indexes for table `category`
+--
+ALTER TABLE `category`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `posts`
+--
+ALTER TABLE `posts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `category_id` (`category_id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -70,10 +130,32 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `category`
+--
+ALTER TABLE `category`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `posts`
+--
+ALTER TABLE `posts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `posts`
+--
+ALTER TABLE `posts`
+  ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

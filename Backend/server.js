@@ -5,6 +5,7 @@ import cors from '@elysiajs/cors'
 // Routes
 import { userRoutes } from './routes/users.route.js'
 import { categoryRoutes } from './routes/category.js'
+import { postRoutes } from './routes/posts.route.js'
 
 const app = new Elysia({ adapter: node() })
 	.use(cors())
@@ -12,6 +13,7 @@ const app = new Elysia({ adapter: node() })
 
 	.use(userRoutes)
 	.use(categoryRoutes)
+	.use(postRoutes)
 
 	.listen(4000, ({ hostname, port }) => {
 		console.log(

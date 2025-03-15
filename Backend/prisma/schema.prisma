@@ -8,8 +8,9 @@ datasource db {
 }
 
 model category {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(255)
+  id    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(255)
+  posts posts[]
 }
 
 model users {
@@ -20,6 +21,22 @@ model users {
   isActive  Boolean    @default(true)
   createdAt DateTime   @default(now()) @db.Timestamp(0)
   updatedAt DateTime   @default(now()) @db.Timestamp(0)
+}
+
+model posts {
+  id              Int      @id @default(autoincrement())
+  title           String   @db.VarChar(255)
+  category_id     Int
+  cover_image_url String?  @db.VarChar(255)
+  video_link      String?  @db.VarChar(255)
+  content         String   @db.Text
+  created_at      DateTime @default(now()) @db.Timestamp(0)
+  updated_at      DateTime @default(now()) @db.Timestamp(0)
+  isActive        Boolean? @default(true)
+  views           Int?     @default(0)
+  category        category @relation(fields: [category_id], references: [id], onUpdate: Restrict, map: "posts_ibfk_1")
+
+  @@index([category_id], map: "category_id")
 }
 
 enum users_role {

@@ -1,35 +1,36 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { API } from "../../../../service/api";
-import Switch from "react-switch"; // นำเข้าคอมโพเนนต์ switch
-import dynamic from "next/dynamic"; // ใช้ dynamic import สำหรับ react-select
-import { useDropzone } from "react-dropzone"; // ใช้ react-dropzone
+import { API } from "../../../../../service/api";
+import Switch from "react-switch";
+import dynamic from "next/dynamic";
+import { useDropzone } from "react-dropzone";
 
 // Dynamically import react-select to avoid SSR issues
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
-export default function AddPostPage() {
+export default function EditPostPage() {
+  const { id } = useParams();
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState(); // state สำหรับประเภท
-  const [coverImage, setCoverImage] = useState(null); // state สำหรับเก็บหน้าปกข่าวสาร
-  const [videoLink, setVideoLink] = useState(""); // state สำหรับลิงก์วิดีโอแนะนำ
+  const [category, setCategory] = useState();
+  const [coverImage, setCoverImage] = useState(null);
+  const [videoLink, setVideoLink] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("edit"); // แท็บ Edit หรือ Preview
+  const [activeTab, setActiveTab] = useState("edit");
   const [categories, setCategories] = useState([]);
-  const [publishStatus, setPublishStatus] = useState(true); // state สำหรับการเผยแพร่ (true = เผยแพร่, false = ไม่เผยแพร่)
+  const [publishStatus, setPublishStatus] = useState(true);
+  const [contentPost, setContentPost] = useState("");
   const router = useRouter();
 
   const getCategories = async () => {
     try {
       const response = await axios.get(`${API}/category/`);
-      console.log(response);
       setCategories(response.data.resultData);
     } catch (error) {
       console.log(error);
@@ -38,8 +39,26 @@ export default function AddPostPage() {
 
   useEffect(() => {
     getCategories();
+    getPost();
   }, []);
 
+  const getPost = async () => {
+    try {
+      const response = await axios.get(`${API}/posts/${id}`);
+      console.log(response.data.resultData);
+      setTitle(response.data.resultData.title);
+      setCategory(response.data.resultData.category_id);
+      setCoverImage(response.data.resultData.cover_image_url);
+      setVideoLink(response.data.resultData.video_link);
+      setPublishStatus(response.data.resultData.isActive);
+      setContentPost(response.data.resultData.content);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.message || "ไม่สามารถเรียกข้อมูลได้");
+    }
+  };
+
+  // Create the editor instance
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -47,8 +66,15 @@ export default function AddPostPage() {
         inline: true,
       }),
     ],
-    content: "",
+    content: contentPost, // Set content dynamically based on the state
   });
+
+  useEffect(() => {
+    // Ensure editor is ready and contentPost is set
+    if (editor && contentPost) {
+      editor.commands.setContent(contentPost); // Update editor content
+    }
+  }, [contentPost, editor]);
 
   const handleImageUpload = async (file) => {
     if (!file) {
@@ -116,26 +142,25 @@ export default function AddPostPage() {
 
     try {
       const content = editor.getHTML();
-      const response = await axios.post(`${API}/posts`, {
+      const response = await axios.put(`${API}/posts/${id}`, {
         title,
-        category_id : category.toString(),
-        cover_image_url : coverImage, // ส่ง URL ของหน้าปกข่าวสาร
-        video_link : videoLink,  // ส่งลิงก์วิดีโอแนะนำ
+        category_id: category.toString(),
+        cover_image_url: coverImage, // ส่ง URL ของหน้าปกข่าวสาร
+        video_link: videoLink, // ส่งลิงก์วิดีโอแนะนำ
         content,
-        isActive : publishStatus, // ส่งสถานะการเผยแพร่
+        isActive: publishStatus, // ส่งสถานะการเผยแพร่
       });
       if (response.status === 200) {
-        toast.success(response.data.message ||"เพิ่มข้อมูลสำเร็จ!");
+        toast.success(response.data.message || "แก้ไขข้อมูลสำเร็จ!");
         router.push("/admin/dashboard");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "เพิ่มโพสต์ไม่สำเร็จ");
+      toast.error(error.response?.data?.message || "แก้ไขโพสต์ไม่สำเร็จ");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // ฟังก์ชั่นแปลงลิงก์ YouTube ให้เป็น iframe
   const renderVideoPreview = (link) => {
     const youtubePattern = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const match = link.match(youtubePattern);
@@ -154,10 +179,9 @@ export default function AddPostPage() {
         </div>
       );
     }
-    return null; 
+    return null;
   };
 
-  // Convert categories into a format suitable for react-select
   const categoryOptions = categories.map((category) => ({
     value: category.id,
     label: category.name,
@@ -165,15 +189,14 @@ export default function AddPostPage() {
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: "image/*", // Set file type filter here
+    accept: "image/*",
   });
 
   return (
     <div className="container mx-auto p-6 min-h-screen">
-      <h1 className="text-4xl font-bold text-gray-800 mb-8 animate-fade-in-down">เพิ่มข้อมูล</h1>
+      <h1 className="text-4xl font-bold text-gray-800 mb-8 animate-fade-in-down">แก้ไขข้อมูล</h1>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-lg p-6 space-y-6">
-        {/* Input Title */}
         <div>
           <label htmlFor="title" className="block text-lg font-medium text-gray-700 mb-2">
             หัวข้อ
@@ -189,7 +212,6 @@ export default function AddPostPage() {
           />
         </div>
 
-        {/* Input Category using react-select */}
         <div>
           <label htmlFor="category" className="block text-lg font-medium text-gray-700 mb-2">
             ประเภทของข้อมูล
@@ -199,8 +221,7 @@ export default function AddPostPage() {
             options={categoryOptions}
             value={categoryOptions.find((option) => option.value === category)}
             onChange={(selectedOption) => {
-              setCategory(selectedOption.value)
-              console.log(category)
+              setCategory(selectedOption.value);
             }}
             placeholder="เลือกประเภทข้อมูล"
             className="w-full"
@@ -208,7 +229,6 @@ export default function AddPostPage() {
           />
         </div>
 
-        {/* Input Cover Image using react-dropzone */}
         <div>
           <label htmlFor="coverImage" className="block text-lg font-medium text-gray-700 mb-2">
             หน้าปกข้อมูล
@@ -225,7 +245,6 @@ export default function AddPostPage() {
           </div>
         </div>
 
-        {/* Input Video Link */}
         <div>
           <label htmlFor="videoLink" className="block text-lg font-medium text-gray-700 mb-2">
             ลิงก์วิดีโอแนะนำ
@@ -241,7 +260,6 @@ export default function AddPostPage() {
           {videoLink && renderVideoPreview(videoLink)}
         </div>
 
-        {/* Input Publish Status (Switch) */}
         <div>
           <label htmlFor="publishStatus" className="block text-lg font-medium text-gray-700 mb-2">
             สถานะการเผยแพร่
@@ -262,29 +280,20 @@ export default function AddPostPage() {
           </div>
         </div>
 
-        {/* Content Tab */}
         <div>
           <label className="block text-lg font-medium text-gray-700 mb-2">เนื้อหา</label>
-
-          {/* Tab Navigation */}
           <div className="flex gap-2 mb-4">
             <button
               type="button"
               onClick={() => setActiveTab("edit")}
-              className={`px-4 py-2 rounded-t-lg ${activeTab === "edit"
-                  ? "bg-indigo-600 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                } transition-all duration-200`}
+              className={`px-4 py-2 rounded-t-lg ${activeTab === "edit" ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"} transition-all duration-200`}
             >
               แก้ไข
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("preview")}
-              className={`px-4 py-2 rounded-t-lg ${activeTab === "preview"
-                  ? "bg-indigo-600 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                } transition-all duration-200`}
+              className={`px-4 py-2 rounded-t-lg ${activeTab === "preview" ? "bg-indigo-600 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"} transition-all duration-200`}
             >
               ตัวอย่าง
             </button>
@@ -335,7 +344,7 @@ export default function AddPostPage() {
             disabled={isLoading}
             className="flex-1 p-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all duration-300 disabled:opacity-50"
           >
-            {isLoading ? "กำลังเพิ่ม..." : "เพิ่มโพสต์"}
+            {isLoading ? "กำลังเพิ่ม..." : "แก้ไขข้อมูล"}
           </button>
           <button
             type="button"
