@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 15, 2025 at 11:47 AM
+-- Generation Time: Mar 15, 2025 at 01:18 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -37,7 +37,11 @@ CREATE TABLE `category` (
 --
 
 INSERT INTO `category` (`id`, `name`) VALUES
-(3, 'โรคไต');
+(4, 'โรคทั่วไป'),
+(5, 'ศีรษะ'),
+(6, 'ลำตัว'),
+(7, 'ลำตัวส่วนล่าง'),
+(8, 'อุบัติเหตุ');
 
 -- --------------------------------------------------------
 
@@ -63,10 +67,11 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`id`, `title`, `category_id`, `cover_image_url`, `video_link`, `content`, `created_at`, `updated_at`, `isActive`, `views`) VALUES
-(2, 'ฟหกฟหก', 3, 'http://res.cloudinary.com/dcq3ijz0g/image/upload/v1741982951/icare/jbtymrxwqs1om40p5gpr.jpg', '', '<p>แอิแอิ</p>', '2025-03-14 13:09:17', '2025-03-15 02:29:20', 1, 0),
-(3, '5555', 3, 'http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742033612/icare/q12reqs5htrsfmstgkg9.jpg', 'https://youtu.be/dlI7rSqAWD4?si=MD5vvyfEbpAlwEq7', '<p>ทดสอบข้อมูลท่องเที่ยว</p><p></p><p><img src=\"http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742029301/icare/l0ndho7j4wmglv2m2yc2.jpg\"></p><p></p><p>สามารถทดสอบรูปได้</p>', '2025-03-15 02:02:18', '2025-03-15 03:13:48', 0, 0),
-(4, 'sdfsdf', 3, 'http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742030571/icare/ciy0fndj4mgz2ioxy4mp.jpg', '', '<p>sdfsdfsdf</p>', '2025-03-15 02:22:53', '2025-03-15 02:24:10', 1, 0),
-(5, 'สวัสดีครับ1111', 3, 'http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742033522/icare/dwcg9kwgfuoqrordagnb.jpg', 'https://youtu.be/dlI7rSqAWD4?si=MD5vvyfEbpAlwEq7', '<p>ทดสอบข้อมูลท่องเที่ยว ทดสอบ</p><p></p><p></p><p>สามารถทดสอบรูปได้</p>', '2025-03-15 03:12:25', '2025-03-15 03:12:25', 0, 0);
+(6, 'กลาก', 4, 'http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742038619/icare/vsolsh2yvdsq3yqaezjv.jpg', 'https://youtu.be/RmNqEtn1314?si=3zU0vvC_CttIOTOq', '<p>โรคกลากเกิดจากการติดเชื้อราที่ผิวหนัง มักพบได้ตามส่วนต่าง ๆ ของร่างกาย ไม่ว่าจะเป็นบริเวณใบหน้าลำตัวแขนขาทำให้เกิดผื่นเป็นรูปวงกลมหรือวงรี มี สีชมพูจนถึงสีแดงขอบจะเป็นสะเก็ดที่นูนขึ้นผื่นที่เป็นจะค่อยๆ ลามออกโดยมีลักษณะเป็นวงที่มีขอบยกให้เห็นชัดเจน ตรงกลางวงอาจมีสีผิวปกติ&nbsp;<br><br></p><h4><strong>อาการของโรคกลาก</strong></h4><p>- เป็นผื่นรูปวงรี มีขุย พบได้บ่อยบริเวณก้น ลำตัว แขนและขา</p><ul><li><p>- มีอาการคันบริเวณผื่น</p></li><li><p>- ตรงกลางผื่นเป็นสีจางคล้ายสีผิวปกติ</p></li><li><p>- ผื่นจะค่อย ๆ ลามออก มองเห็นขอบยกขึ้นเล็กน้อย<br><br><br><img src=\"http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742038864/icare/vcioq5xncsmi4jtd2yel.jpg\"><br></p></li><li><p><strong>โรคกลากติดต่ออย่างไร</strong></p></li><li><p><strong>- </strong>จากคนสู่คน ติดต่อได้โดยตรงจากการสัมผัสผู้ที่เป็นกลาก</p></li><li><p><strong>- </strong>จากสัตว์สู่คน สามารถติดต่อจากการสัมผัสสัตว์เลี้ยง เช่น หมาหรือแมวได้</p></li><li><p><strong>- </strong>จากพื้นดินสู่คน เกิดได้เมื่อเดินเท้าเปล่าหรือสัมผัสกับพื้นดินที่มีเชื้อรา &nbsp;แต่การติดต่อรูปแบบนี้เกิดขึ้นได้น้อย&nbsp;</p></li><li><p><br></p></li><li><p><strong>วิธีรักษาโรคกลาก</strong></p></li><li><p>- ใช้ยาต้านเชื้อราชนิดทาหรือชนิดใช้เฉพาะที่ ที่มีตัวยาสำคัญ เช่น โคลไตรมาโซล (Clotrimazole) คีโตโคนาโซล (Ketoconazole) ไมโคนาโซล (Miconazole)</p></li><li><p>- ใช้ยาต้านเชื้อรารูปแบบรับประทาน</p></li></ul><p><br><br></p><p></p><p>เครดิตรูปภาพ : https://katudermatology.com/post_service/%E0%B8%81%E0%B8%A5%E0%B8%B2%E0%B8%81/</p>', '2025-03-15 04:44:13', '2025-03-15 04:53:56', 1, 0),
+(7, 'ท้องร่วง', 6, 'http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742039195/icare/jzwz8yhb7c4mq7b2xec0.png', 'https://youtu.be/1i6RXLm-Evs?si=mGtiZI4XAnkN_kPe', '<p><img src=\"http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742039369/icare/drpsblt98qkkksykmwbc.png\"></p><p><br><br><strong>อุจจาระร่วงเฉียบพลันเกิดได้อย่างไร?</strong></p><ul><li><p>- เกิดจากเชื้อโรค เช่น แบคทีเรีย (E. coli, Salmonella, Shigella), ไวรัส (Rotavirus, Norovirus) และพยาธิ (Giardia)</p></li><li><p>- การบริโภคอาหารหรือน้ำที่ปนเปื้อน</p></li><li><p>- สัมผัสโดยตรงกับผู้ติดเชื้อ</p></li><li><p>- ปัจจัยอื่นๆ เช่น การแพ้อาหาร ยาปฏิชีวนะ และโรคระบบทางเดินอาหาร<br><br></p></li></ul><p><strong>วิธีการรักษา</strong></p><ul><li><p>- ดื่มน้ำและเกลือแร่ (ORS) เพื่อป้องกันภาวะขาดน้ำ</p></li><li><p>- อาหารย่อยง่าย เช่น ข้าว กล้วย น้ำแอปเปิ้ล ขนมปังปิ้ง</p></li><li><p>- หลีกเลี่ยงยาหยุดถ่าย (Loperamide) หากไม่มีคำแนะนำจากแพทย์</p></li><li><p>- หากมีอาการรุนแรง เช่น ขาดน้ำมาก ถ่ายเป็นเลือด หรืออาการไม่ดีขึ้น ควรพบแพทย์</p></li></ul><p><br><br></p><p>เครดิตรูปภาพ : https://samitivejthonburi.com/th/article/277/thai-summer-disease-episode-3-acute-diar.html</p>', '2025-03-15 04:51:52', '2025-03-15 04:53:17', 1, 0),
+(8, 'กระเพาะปัสสาวะอักเสบ', 7, 'http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742039674/icare/ymuj6csqprtpeglzebyb.jpg', 'https://youtu.be/UFA1NHMS05o?si=tR7TuyOnhQjchmxB', '<p><img src=\"http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742039871/icare/esi2jxyqx9xhwipagyiy.jpg\"><br><br><strong>กระเพาะปัสสาวะอักเสบเกิดได้อย่างไร?</strong><br>- เกิดจากการติดเชื้อแบคทีเรีย โดยเฉพาะ <em>Escherichia coli (E. coli)</em> ที่เข้าสู่ทางเดินปัสสาวะ</p><ul><li><p>- การกลั้นปัสสาวะบ่อยๆ หรือดื่มน้ำน้อย</p></li><li><p>- การทำความสะอาดบริเวณจุดซ่อนเร้นไม่ถูกวิธี (เช่น เช็ดจากหลังมาหน้า)</p></li><li><p>- การใช้สายสวนปัสสาวะ หรือภาวะสุขภาพบางอย่าง เช่น เบาหวาน<br><br><strong>วิธีการรักษา</strong><br>- ดื่มน้ำมากๆ เพื่อช่วยขับเชื้อออกจากทางเดินปัสสาวะ</p></li><li><p>- ปัสสาวะให้บ่อยขึ้น อย่ากลั้นปัสสาวะ</p></li><li><p>- รับประทานยาปฏิชีวนะ ตามแพทย์สั่ง หากเป็นการติดเชื้อแบคทีเรีย</p></li><li><p>- หลีกเลี่ยงเครื่องดื่มที่ระคายเคืองกระเพาะปัสสาวะ เช่น กาแฟ แอลกอฮอล์ และน้ำอัดลม</p></li><li><p>- หากมีอาการรุนแรง เช่น ปวดมาก ไข้สูง หรือปัสสาวะเป็นเลือด ควรพบแพทย์ทันที<br><br>เครดิตรูป : https://ch9airport.com/th/อาการกระเพาะปัสสาวะอัก/</p></li></ul>', '2025-03-15 04:58:03', '2025-03-15 05:04:18', 1, 0),
+(9, 'ตากุ้งยิง', 5, 'http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742039914/icare/qiscbzk8jhvs5roy9plr.jpg', 'https://youtu.be/oj_3BZWLsV4?si=23XY3uIe-1AhitXs', '<p><img src=\"http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742040007/icare/grdwdouqfdiyqiegbh7g.jpg\"><br><strong>ตากุ้งยิงเกิดได้อย่างไร?</strong><br>- เกิดจากการติดเชื้อแบคทีเรีย <em>Staphylococcus aureus</em> ที่ต่อมไขมันบริเวณเปลือกตา</p><ul><li><p>- การสัมผัสดวงตาด้วยมือสกปรก</p></li><li><p>- การใช้เครื่องสำอางเก่า หรือไม่ล้างเครื่องสำอางก่อนนอน</p></li><li><p>- ภูมิคุ้มกันอ่อนแอ หรือมีภาวะเปลือกตาอักเสบเรื้อรัง<br><br><strong>วิธีการรักษา</strong><br>- ประคบอุ่น วันละ 3-4 ครั้ง ครั้งละ 10-15 นาที เพื่อลดอาการบวมและช่วยให้หัวหนองแตกเอง</p></li><li><p>- ล้างมือให้สะอาด หลีกเลี่ยงการขยี้ตา</p></li><li><p>- งดใช้เครื่องสำอางรอบดวงตา จนกว่าอาการจะหาย</p></li><li><p>- หากเป็นบ่อยหรือมีหนองมาก อาจต้องใช้ยาปฏิชีวนะ หรือพบแพทย์เพื่อระบายหนองออก<br><br>เครดิตรูป : https://www.vimut.com/article/Hordeolum<br><br></p></li></ul>', '2025-03-15 05:02:45', '2025-03-15 05:02:45', 1, 0),
+(10, 'ตกจากที่สูง', 8, 'http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742040299/icare/kw7kay5xnjcnhzqbgiqr.jpg', 'https://youtu.be/TmhXhavqwTk?si=s4_rfKYx16Jg-kFr', '<h4><img src=\"http://res.cloudinary.com/dcq3ijz0g/image/upload/v1742040382/icare/zwypiegzshhxojel1eay.jpg\"><br><strong>ตกจากที่สูงเกิดได้อย่างไร?</strong></h4><ul><li><p>อุบัติเหตุจากการทำงาน เช่น ก่อสร้าง ปีนบันได หรือซ่อมแซมที่สูง</p></li><li><p>การพลัดตกจากที่สูง เช่น ตกจากระเบียง ต้นไม้ หรือหลังคา</p></li><li><p>อุบัติเหตุจากการเล่นกีฬา หรือกิจกรรมผาดโผน<br><br><strong>วิธีการปฐมพยาบาลและรักษา</strong><br>- อย่าขยับผู้บาดเจ็บ หากสงสัยว่ามีอาการบาดเจ็บที่กระดูกสันหลังหรือศีรษะ</p></li><li><p>- ตรวจชีพจร และการหายใจ หากหมดสติ ให้ทำ CPR ทันที</p></li><li><p>- กดห้ามเลือด หากมีบาดแผลที่เลือดออกมาก</p></li><li><p>- ประคบเย็น เพื่อลดอาการบวมในกรณีฟกช้ำ</p></li><li><p>- เรียกรถพยาบาลทันที หากมีอาการรุนแรง เช่น หมดสติ กระดูกหัก ปวดศีรษะรุนแรง อาเจียน หรือแขนขาอ่อนแรง<br><br>เครดิตรูป : https://glovetex.com/wp-content/uploads/2024/02/1395-5.jpg</p></li></ul>', '2025-03-15 05:08:04', '2025-03-15 05:08:04', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -133,13 +138,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`
