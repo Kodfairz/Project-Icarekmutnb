@@ -41,7 +41,7 @@ export default function CategoryBlog() {
       setIsModalOpenAdd(false)
     } catch (error) {
       console.log(error)
-      toast.error(error.response.message || "ไม่สามารถเพิ่มประเภคโรค");
+      toast.error(error.response.message || "ไม่สามารถเพิ่มประเภคข้อมูล");
     }
   }
 
@@ -55,7 +55,7 @@ export default function CategoryBlog() {
       getCategory()
     } catch (error) {
       console.log(error)
-      toast.error(error.response.message || "ไม่สามารถแก้ไขประเภคโรค");
+      toast.error(error.response.message || "ไม่สามารถแก้ไขประเภคข้อมูล");
     }
   }
 
@@ -66,7 +66,7 @@ export default function CategoryBlog() {
       getCategory()
     } catch (error) {
       console.log(error)
-      toast.error(error.response.message || "ไม่สามารถลบประเภทโรค")
+      toast.error(error.response.message || "ไม่สามารถลบประเภทข้อมูล")
     }
   }
 
@@ -115,14 +115,14 @@ export default function CategoryBlog() {
 
   return (
     <div className="p-6 space-y-6">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">จัดการประเภทโรค</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">จัดการประเภทข้อมูล</h2>
         <button
           onClick={() => {
             setIsModalOpenAdd(true)
           }}
           className="p-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 transition-all duration-300 transform hover:scale-105"
         >
-          เพิ่มประเภทโรค
+          เพิ่มประเภทข้อมูล
         </button>
 
         {isModalOpenAdd && <AddBlogCategory onClose={() => setIsModalOpenAdd(false)} onSubmit={addCategory} />}

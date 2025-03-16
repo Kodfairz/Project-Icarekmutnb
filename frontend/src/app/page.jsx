@@ -1,30 +1,63 @@
 'use client';
-import Head from 'next/head';
+
 import Navbar from './components/Navbar';
 import { useState, useEffect } from 'react'
 import { API } from './service/api';
 import axios from 'axios';
+import Head from 'next/head';
+import Link from 'next/link';
+import { toast } from 'react-toastify';
 
 export default function Home() {
   const [posts, setPosts] = useState([])
+  const [comment, setComment] = useState("")
+  const [video, setVideo] = useState([])
+
+  const getVideo = async () => {
+    try {
+        const response = await axios.get(`${API}/video/video-recommend`)
+        setVideo(response.data.resultData)
+    } catch (error) {
+        console.log(error)
+        toast.error(error.response.message || "ไม่สามารถเรียกวิดีโอได้")
+    }
+  }
   
   const getPosts = async () => {
     try {
-      const response = await axios.get(`${API}/posts`)
+      const response = await axios.get(`${API}/posts/post-recommend`)
       console.log(response)
       setPosts(response.data.resultData)
     } catch (error) {
       console.log(error)
+      toast.error(error.response.message || "ไม่สามารถเรียกข้อมูลได้")
+    }
+  }
+
+  const sendMessage = async (event) => {
+    try {
+        event.preventDefault()
+        const response = await axios.post(`${API}/comments`, {
+            value : comment
+        })
+        
+        setComment("")
+        toast.success("ส่งข้อความสำเร็จ")
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (error) {
+        console.log(error)
+        toast.error(error.response.message || "ไม่สามารถส่งข้อความได้")
     }
   }
 
   useEffect(() => {
     getPosts()
+    getVideo()
   },[])
 
 
     return (
-        <div className="bg-gradient-to-b from-blue-100 to-white min-h-screen font-sans">
+        <div className="bg-gradient-to-b from-blue-100 to-white min-h-screen ">
             <Head>
                 <h1 className="text-4xl text-gray-800 font-semibold font-anakotmai">iCare@KMUTNB</h1>
                 <meta name="description" content="คู่มือโรคและอุบัติเหตุสำหรับคุณ" />
@@ -43,29 +76,25 @@ export default function Home() {
 
                 <section className="text-center py-8">
                     <h3 className="text-xl text-white mb-10 px-4 py-2 bg-green-600 rounded-md max-w-sm ml-0 font-anakotmai">โรคภัยและอุบัติเหตุใกล้ตัว</h3>
-                    <div className="flex justify-center mb-4">
-                        <input type="text" placeholder="ค้นหา..." className="w-1/3 p-2 border border-gray-300 rounded-md text-gray-700 font-anakotmai" />
-                        <button className="bg-yellow-400 text-white px-6 py-2 rounded-md ml-2 transition duration-300 hover:bg-yellow-500 font-anakotmai">
-                            ค้นหา
-                        </button>
-                    </div>
+                 
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
                         {posts.map((item, index) => (
                             <div key={index} className="bg-white p-6 rounded-lg shadow-md text-center font-anakotmai">
                                 <img
                                     src={item.cover_image_url}
                                     alt={item.title}
-                                    className="w-full h-auto max-h-48 object-contain rounded-md mb-4" />
+                                    className="w-full h-auto max-h-48 object-contain rounded-xl mb-4" />
                                 <h4 className="text-lg text-gray-700 mb-2">{item.title}</h4>
-                                <a href="#" className="inline-block px-6 py-2 text-white bg-blue-500 rounded-md transition duration-300 transform hover:bg-blue-700 hover:scale-105 font-anakotmai">ดูข้อมูล</a>
+                                <h5 className='mb-2'>ประเภทข้อมูล {item.category.name}</h5>
+                                <Link href={`/post/${item.id}`} className="inline-block px-6 py-2 text-white bg-blue-500 rounded-md transition duration-300 transform hover:bg-blue-700 hover:scale-105 font-anakotmai">ดูข้อมูล</Link>
                             </div>))}
                     </div>
 
                 </section>
                 <div className="text-center py-8 font-anakotmai">
-                    <a href="/Explore_diseases" className="bg-yellow-600 text-white px-8 py-3 rounded-md mt-4 transition duration-300 hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-blue-500">
+                    <Link href="/posts" className="bg-yellow-600 text-white px-8 py-3 rounded-md mt-4 transition duration-300 hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-blue-500">
                         สำรวจโรคต่างๆ
-                    </a>
+                    </Link>
                 </div>
 
 
@@ -74,33 +103,32 @@ export default function Home() {
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-                    {[
-                        { id: '9X2hLRO-W78', title: 'การรับมือกับโรค Covid -19' },
-                        { id: 'FeqxlQOWXi8', title: 'การแก้ปัญหาการนอนหลับ' },
-                        { id: 'U7d1-_SWJv4', title: 'การรับมือความเครียดทางจิตใจ' },
-                        { id: '_Ra0OAvFdBE', title: 'การล้างแผลและปฐมพยาบาล' },
-                        { id: 'To32yXMZ5n4', title: 'การเลือกใช้ยามัญประจำบ้าน' },
-                    ].map((video, index) => (
+                    {video.map((item, index) => (
                         <div key={index} className="bg-white p-6 rounded-lg shadow-md text-center font-anakotmai">
                             {/* ดึงภาพ Thumbnail จาก YouTube */}
                             <img
-                                src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`}
-                                alt={video.title}
+                                src={item.thumbnail_url}
+                                alt={item.title}
                                 className="w-full h-auto max-h-48 object-contain rounded-md mb-4"
                             />
                             {/* ชื่อวิดีโอ */}
-                            <h4 className="text-lg text-gray-700 mb-2">{video.title}</h4>
+                            <h4 className="text-lg text-gray-700 mb-2">{item.title}</h4>
                             {/* ปุ่มลิงก์ไปยัง YouTube */}
-                            <a
-                                href={`https://www.youtube.com/watch?v=${video.id}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                            <Link
+                                href={`/video/${item.id}`}
+                                
                                 className="inline-block px-6 py-2 text-white bg-blue-500 rounded-md transition duration-300 transform hover:bg-blue-700 hover:scale-105 font-anakotmai"
                             >
                                 ดูวิดีโอ
-                            </a>
+                            </Link>
                         </div>
                     ))}
+                </div>
+
+                <div className="text-center py-8 font-anakotmai">
+                    <Link href="/video" className="bg-yellow-600 text-white px-8 py-3 rounded-md mt-4 transition duration-300 hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-blue-500">
+                        สำรวจวิดีโอต่างๆ
+                    </Link>
                 </div>
 
             </main>
@@ -130,11 +158,14 @@ export default function Home() {
                     {/* ส่งข้อความหาเรา */}
                     <div className="w-full md:w-2/5 font-anakotmai mt-8 md:mt-0">
                         <h4 className="text-xl font-bold text-blue-300 mb-4">ส่งข้อความหาเรา</h4>
-                        <form>
+                        <form onSubmit={sendMessage}>
                             <input
                                 type="text"
+                                value={comment}
                                 placeholder="พิมพ์ข้อความของคุณ..."
+                                onChange={(e) => setComment(e.target.value)}
                                 className="w-full p-3 border border-gray-300 rounded-md mb-4 text-black"
+                                required
                             />
                             <button
                                 type="submit"

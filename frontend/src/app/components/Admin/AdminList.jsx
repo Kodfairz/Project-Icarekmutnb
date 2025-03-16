@@ -21,7 +21,6 @@ export default function AdminList() {
     const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
     const [isModalOpenChangePassword, setIsModalOpenChangePassword] = useState(false);
     const [idUser, setIdUser] = useState("");
-    const router = useRouter();
 
     useEffect(() => {
         fetchAdminsData();

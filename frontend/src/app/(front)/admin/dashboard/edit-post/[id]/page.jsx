@@ -11,7 +11,7 @@ import { API } from "../../../../../service/api";
 import Switch from "react-switch";
 import dynamic from "next/dynamic";
 import { useDropzone } from "react-dropzone";
-
+import Cookies from "js-cookie";
 // Dynamically import react-select to avoid SSR issues
 const Select = dynamic(() => import("react-select"), { ssr: false });
 
@@ -149,12 +149,15 @@ export default function EditPostPage() {
         video_link: videoLink, // ส่งลิงก์วิดีโอแนะนำ
         content,
         isActive: publishStatus, // ส่งสถานะการเผยแพร่
+        user_update_id : `${JSON.parse(Cookies.get('user')).id}`
       });
+     
       if (response.status === 200) {
         toast.success(response.data.message || "แก้ไขข้อมูลสำเร็จ!");
         router.push("/admin/dashboard");
       }
     } catch (error) {
+      console.log(error)
       toast.error(error.response?.data?.message || "แก้ไขโพสต์ไม่สำเร็จ");
     } finally {
       setIsLoading(false);

@@ -43,6 +43,10 @@ export const userRoutes = new Elysia({ prefix: "/users" })
             throw new Error("ไม่พบผู้ใช้งาน")
         }
 
+        if(!user.isActive) {
+            throw new Error("ผู้ใช้ปิดใช้งาน")
+        }
+
         const isPasswordMatch = bcrypt.compareSync(body.password, user.password);
 
         if (!isPasswordMatch) {

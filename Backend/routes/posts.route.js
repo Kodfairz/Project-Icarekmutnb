@@ -22,7 +22,9 @@ export const postRoutes = new Elysia({ prefix: "/posts" })
             cover_image_url : body.cover_image_url,
             video_link : body.video_link,
             content : body.content,
-            isActive : body.isActive
+            isActive : body.isActive,
+            user_id : Number(body.user_id),
+            user_update_id : Number(body.user_id)
         }
     })
 
@@ -46,6 +48,28 @@ export const postRoutes = new Elysia({ prefix: "/posts" })
 
     if(!posts) {
         throw new Error("ไม่สามารถเรียกข้อมูลได้")
+    }
+
+    return {
+        "resultData" : posts
+    }
+})
+.get("/post-recommend", async () => {
+    const posts = await prisma.posts.findMany({
+        orderBy: {
+            views: 'desc', // เรียงจากมากไปน้อย
+        },
+        include : {
+            category : true
+        },
+        where : {
+            isActive : true
+        },
+        take: 6 
+    });
+
+    if(!posts) {
+        throw new Error("ไม่สามารถเรียกข้อมูลได้");
     }
 
     return {
@@ -159,7 +183,8 @@ export const postRoutes = new Elysia({ prefix: "/posts" })
             video_link : body.video_link,
             content : body.content,
             isActive : body.isActive,
-            updated_at : new Date()
+            updated_at : new Date(),
+            user_update_id : Number(body.user_update_id)
         }
     })
 
@@ -171,3 +196,33 @@ export const postRoutes = new Elysia({ prefix: "/posts" })
         "message" : "แก้ไขข้อมูลสำเร็จ"
     }
 })
+.get("/user/:id", async ({ params }) => {
+    const post = await prisma.posts.findFirst({
+        where : {
+            id : Number(params.id)
+        },
+        include : {
+            category : true,
+            users_posts_user_idTousers : true,
+            users_posts_user_update_idTousers : true
+        }
+    })
+
+    if(!post) {
+        throw new Error("ไม่เจอข้อมูล")
+    }
+
+    const updateView = await prisma.posts.update({
+        where : {
+            id : Number(params.id)
+        },
+        data : {
+            views : post.views + 1
+        }
+    })
+
+    return {
+        "resultData" : post
+    }
+})
+

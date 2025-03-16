@@ -4,6 +4,8 @@ import { useState } from "react";
 import AdminList from "../../../components/Admin/AdminList";
 import BlogManagement from "../../../components/Admin/Blog/BlogManagement";
 import CategoryBlog from "../../../components/Admin/Blog/BlogCategory";
+import Comment from "../../../components/Admin/Comment";
+import VideoManagement from "../../../components/Admin/Video/VideoManagement";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("แอดมิน");
@@ -16,7 +18,7 @@ export default function AdminDashboard() {
 
       {/* Tab Navigation */}
       <nav className="flex flex-wrap gap-2 mb-8 border-b border-gray-200">
-        {["แอดมิน", "ข่าวสาร", "ประเภทโรค"].map((tab) => (
+        {["แอดมิน", "ข่าวสาร", "วิดีโอ", "ประเภทข้อมูล", "ข้อเสนอแนะ"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -34,7 +36,9 @@ export default function AdminDashboard() {
       <section className="bg-white rounded-xl shadow-lg p-6 animate-fade-in">
         {activeTab === "แอดมิน" && <AdminList />}
         {activeTab === "ข่าวสาร" && <BlogManagement />}
-        {activeTab === "ประเภทโรค" && <CategoryBlog />}
+        {activeTab == "วิดีโอ" && <VideoManagement />}
+        {activeTab === "ประเภทข้อมูล" && <CategoryBlog />}
+        {activeTab === "ข้อเสนอแนะ" && <Comment />}
       </section>
     </div>
   );

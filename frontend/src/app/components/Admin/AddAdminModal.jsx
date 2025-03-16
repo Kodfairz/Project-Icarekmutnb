@@ -52,7 +52,7 @@ export default function AddAdminModal({ onClose, onSubmit }) {
                             onClick={onClose}
                             className="flex-1 p-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-200"
                         >
-                            แก้ไข
+                            ลบ
                         </button>
                     </div>
                 </form>

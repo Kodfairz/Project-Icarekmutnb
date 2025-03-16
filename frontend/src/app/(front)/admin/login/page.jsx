@@ -7,8 +7,10 @@ import { motion } from "framer-motion";
 import axios from 'axios'
 import { API } from '../../../service/api'
 import { toast } from "react-toastify";
+import Cookies from 'js-cookie';
 
 export default function Login() {
+  const expireTimeInDays = 20 / 24;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -24,11 +26,11 @@ export default function Login() {
         })
 
         if(response.status == 200) {
-            localStorage.setItem('token', response.data.token)
-            localStorage.setItem('user', JSON.stringify(response.data.resultData))
+            Cookies.set('token', response.data.token, { expires: expireTimeInDays });
+            Cookies.set('user', JSON.stringify(response.data.resultData), { expires: expireTimeInDays })
             toast.success("เข้าสู่ระบบสำเร็จ!")
             window.dispatchEvent(new Event('loginStatusChanged'))
-            router.push('/home')
+            router.push('/admin/dashboard')
         }
 
         console.log(response);

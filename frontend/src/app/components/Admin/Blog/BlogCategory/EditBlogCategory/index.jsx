@@ -40,12 +40,12 @@ export default function EditBlogCategory({ onClose, onSubmit, id }) {
                     ×
                 </button>
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                    แก้ไขประเภทโรค
+                    แก้ไขประเภทข้อมูล
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <input
                         type="text"
-                        placeholder="ชื่อประเภทโรค"
+                        placeholder="ชื่อประเภทข้อมูล"
                         value={editBlog.name}
                         onChange={(e) => setEditBlog({ ...editBlog, name: e.target.value })}
                         required

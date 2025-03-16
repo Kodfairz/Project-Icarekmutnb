@@ -14,29 +14,64 @@ model category {
 }
 
 model users {
-  id        Int        @id @default(autoincrement())
-  username  String     @unique(map: "username") @db.VarChar(255)
-  password  String     @db.VarChar(255)
-  role      users_role @default(user)
-  isActive  Boolean    @default(true)
-  createdAt DateTime   @default(now()) @db.Timestamp(0)
-  updatedAt DateTime   @default(now()) @db.Timestamp(0)
+  id                                       Int           @id @default(autoincrement())
+  username                                 String        @unique(map: "username") @db.VarChar(255)
+  password                                 String        @db.VarChar(255)
+  role                                     users_role    @default(user)
+  isActive                                 Boolean       @default(true)
+  createdAt                                DateTime      @default(now()) @db.Timestamp(0)
+  updatedAt                                DateTime      @default(now()) @db.Timestamp(0)
+  posts_posts_user_idTousers               posts[]       @relation("posts_user_idTousers")
+  posts_posts_user_update_idTousers        posts[]       @relation("posts_user_update_idTousers")
+  video_links_video_links_update_idTousers video_links[] @relation("video_links_update_idTousers")
+  video_links_video_links_user_idTousers   video_links[] @relation("video_links_user_idTousers")
 }
 
 model posts {
-  id              Int      @id @default(autoincrement())
-  title           String   @db.VarChar(255)
-  category_id     Int
-  cover_image_url String?  @db.VarChar(255)
-  video_link      String?  @db.VarChar(255)
-  content         String   @db.Text
-  created_at      DateTime @default(now()) @db.Timestamp(0)
-  updated_at      DateTime @default(now()) @db.Timestamp(0)
-  isActive        Boolean? @default(true)
-  views           Int?     @default(0)
-  category        category @relation(fields: [category_id], references: [id], onUpdate: Restrict, map: "posts_ibfk_1")
+  id                                Int      @id @default(autoincrement())
+  title                             String   @db.VarChar(255)
+  user_id                           Int?
+  category_id                       Int
+  cover_image_url                   String?  @db.VarChar(255)
+  video_link                        String?  @db.VarChar(255)
+  content                           String   @db.Text
+  created_at                        DateTime @default(now()) @db.Timestamp(0)
+  updated_at                        DateTime @default(now()) @db.Timestamp(0)
+  user_update_id                    Int?
+  isActive                          Boolean? @default(true)
+  views                             Int?     @default(0)
+  users_posts_user_idTousers        users?   @relation("posts_user_idTousers", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_head_user_id")
+  users_posts_user_update_idTousers users?   @relation("posts_user_update_idTousers", fields: [user_update_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_update_id")
+  category                          category @relation(fields: [category_id], references: [id], onUpdate: Restrict, map: "posts_ibfk_1")
 
   @@index([category_id], map: "category_id")
+  @@index([user_id], map: "fk_head_user_id")
+  @@index([user_update_id], map: "fk_user_update_id")
+}
+
+model comments {
+  id         Int      @id @default(autoincrement())
+  value      String?  @db.VarChar(255)
+  created_at DateTime @default(now()) @db.Timestamp(0)
+}
+
+model video_links {
+  id                                 Int      @id @default(autoincrement())
+  title                              String   @db.VarChar(255)
+  description                        String?  @db.Text
+  url                                String   @db.VarChar(500)
+  user_id                            Int?
+  update_id                          Int?
+  isActive                           Boolean
+  views                              Int      @default(0)
+  thumbnail_url                      String?  @db.VarChar(500)
+  created_at                         DateTime @default(now()) @db.Timestamp(0)
+  updated_at                         DateTime @default(now()) @db.Timestamp(0)
+  users_video_links_update_idTousers users?   @relation("video_links_update_idTousers", fields: [update_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_update_id")
+  users_video_links_user_idTousers   users?   @relation("video_links_user_idTousers", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id")
+
+  @@index([update_id], map: "fk_update_id")
+  @@index([user_id], map: "fk_user_id")
 }
 
 enum users_role {

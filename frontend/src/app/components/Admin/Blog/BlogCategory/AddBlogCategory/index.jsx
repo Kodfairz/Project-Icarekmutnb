@@ -21,12 +21,12 @@ export default function AddBlogCategory({ onClose, onSubmit }) {
                     ×
                 </button>
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                    เพิ่มประเภทโรค
+                    เพิ่มประเภทข้อมูล
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <input
                         type="text"
-                        placeholder="ชื่อประเภทโรค"
+                        placeholder="ชื่อประเภทข้อมูล"
                         value={newBlog.name}
                         onChange={(e) => setNewBlog({ ...newBlog, name: e.target.value })}
                         required

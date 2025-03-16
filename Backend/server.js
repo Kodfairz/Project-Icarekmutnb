@@ -6,7 +6,8 @@ import cors from '@elysiajs/cors'
 import { userRoutes } from './routes/users.route.js'
 import { categoryRoutes } from './routes/category.js'
 import { postRoutes } from './routes/posts.route.js'
-
+import { commentRoutes } from './routes/comments.route.js'
+import { videoRoutes } from './routes/video.route.js'
 const app = new Elysia({ adapter: node() })
 	.use(cors())
 	.get('/', () => 'Hello Elysia')
@@ -14,6 +15,8 @@ const app = new Elysia({ adapter: node() })
 	.use(userRoutes)
 	.use(categoryRoutes)
 	.use(postRoutes)
+	.use(commentRoutes)
+	.use(videoRoutes)
 
 	.listen(4000, ({ hostname, port }) => {
 		console.log(
