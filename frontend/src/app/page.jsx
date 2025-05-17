@@ -68,10 +68,7 @@ export default function Home() {
                 <section className="text-center py-12">
                     <h2 className="text-3xl text-blue-600 font-bold font-anakotmai">รู้ทันทุกสถานการณ์ฉุกเฉิน</h2>
                     <h2 className="text-3xl text-blue-600 font-bold font-anakotmai"><center>คู่มือโรคและอุบัติเหตุสำหรับคุณ</center></h2>
-                    <p className="text-lg text-gray-600 my-4 font-anakotmai">ค้นหาและเรียนรู้วิธีป้องกันและจัดการโรคหรืออุบัติเหตุได้ที่นี่</p>
-                    <a href="page" className="bg-green-700 text-white px-8 py-3 rounded-md mt-4 transition duration-300 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-blue-500 font-anakotmai">
-                        ดูเพิ่มเติม
-                    </a>
+                    <p className="text-lg text-gray-600 my-4 font-anakotmai">เรียนรู้วิธีป้องกันและจัดการโรคหรืออุบัติเหตุ</p>
                 </section>
 
                 <section className="text-center py-8">
@@ -93,7 +90,7 @@ export default function Home() {
                 </section>
                 <div className="text-center py-8 font-anakotmai">
                     <Link href="/posts" className="bg-yellow-600 text-white px-8 py-3 rounded-md mt-4 transition duration-300 hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-blue-500">
-                        สำรวจโรคต่างๆ
+                        สำรวจโรคเพิ่มเติม
                     </Link>
                 </div>
 
@@ -127,7 +124,7 @@ export default function Home() {
 
                 <div className="text-center py-8 font-anakotmai">
                     <Link href="/video" className="bg-yellow-600 text-white px-8 py-3 rounded-md mt-4 transition duration-300 hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-blue-500">
-                        สำรวจวิดีโอต่างๆ
+                        สำรวจวิดีเพิ่มเติม
                     </Link>
                 </div>
 
