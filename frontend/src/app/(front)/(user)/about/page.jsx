@@ -12,12 +12,12 @@ const AboutPage = () => {
     team: [
       {
         name: 'นาย กมลภพ วงศ์ปาน',
-        role: 'ผู้ก่อตั้ง',
+        role: 'ผู้พัฒนา',
         image: '/team/kamonphob.jpg',
       },
       {
         name: 'นางสาว ธัญภัทร์ มณฑา',
-        role: 'ผู้ก่อตั้ง',
+        role: 'ผู้พัฒนา',
         image: '/team/Thanya.jpg',
       },
     ],
